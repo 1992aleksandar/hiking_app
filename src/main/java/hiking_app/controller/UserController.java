@@ -47,11 +47,17 @@ public class UserController {
 	private UserModelAssembler userModelAssembler;
 
 	@GetMapping(path = "users/{email}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public UserEntity getUser(@PathVariable String email) {
-		UserEntity returnValue = new UserEntity();
-		returnValue = userRepository.getUserEntityByEmail(email);
+	public ResponseEntity<UserModel> getUser(@PathVariable String email) throws Exception {
+		UserEntity repositoryUser;
+		repositoryUser = userRepository.getUserEntityByEmail(email);
 
-		return returnValue;
+		if (repositoryUser == null)
+			throw new Exception("User wasnt found");
+
+		ResponseEntity<UserModel> userModel = new ResponseEntity<>(userModelAssembler.toModel(repositoryUser),
+				HttpStatus.OK);
+		
+		return userModel;
 	}
 
 	@PostMapping(path = "users/registration", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
@@ -106,20 +112,25 @@ public class UserController {
 	}
 
 	@DeleteMapping(produces = { MediaType.APPLICATION_JSON_VALUE }, path = "/users/{userEmail}/{eventName}")
-	public void deleteUserFromEvent(@PathVariable String userEmail, @PathVariable String eventName) throws Exception {
+	public void deleteUserFromEvent(@PathVariable String userEmail, @PathVariable String eventName,
+			@AuthenticationPrincipal String currentPrincipal) throws Exception {
 		EventEntity event = eventRepository.getEventEntityByName(eventName);
 		UserEntity user = userRepository.getUserEntityByEmail(userEmail);
 
 		if (event == null || user == null)
 			throw new Exception("User or event wasnt found");
-		else {
+		
+		if (!currentPrincipal.equals(userEmail))
+			if (!(userRepository.getUserEntityByEmail(currentPrincipal) instanceof GroupLeaderEntity))
+				throw new Exception("You have no authorities to do that.");
+	
 			if (user instanceof HikerEntity)
 				event.removeHiker((HikerEntity) user);
 
 			if (user instanceof GroupLeaderEntity)
 				event.removeGroupLeader((GroupLeaderEntity) user);
-		}
-		event.getHikers().remove(user);
+		
+			event.getHikers().remove(user);
 		userRepository.save(user);
 	}
 }

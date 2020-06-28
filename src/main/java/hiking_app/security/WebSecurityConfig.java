@@ -46,12 +46,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable().authorizeRequests().antMatchers(HttpMethod.PUT, "/users/*/*")
-				.hasAnyRole("ADMIN", "USER").antMatchers(HttpMethod.DELETE, "/users/*/*").hasAnyRole("ADMIN", "USER")
+		http.cors().and().csrf().disable().authorizeRequests()
+		        .antMatchers(HttpMethod.PUT, "/users/*/*").hasAnyRole("ADMIN", "USER")
+		        .antMatchers(HttpMethod.DELETE, "/users/*/*").hasAnyRole("ADMIN", "USER")
 				.antMatchers(HttpMethod.POST, "/users/registration").permitAll()
 				.antMatchers(HttpMethod.POST, "/events/registration").permitAll()
+				.antMatchers(HttpMethod.GET, "/users/*").hasAnyRole("ADMIN", "USER")
+				.antMatchers(HttpMethod.DELETE, "/events/*").hasAnyRole("ADMIN")
 				.antMatchers(HttpMethod.GET, "/events/*").hasAnyRole("ADMIN", "USER")
-				.antMatchers(HttpMethod.GET, "/events").hasAnyRole("ADMIN", "USER").anyRequest().authenticated().and()
+				.antMatchers(HttpMethod.GET, "/events").hasAnyRole("ADMIN", "USER")
+				.anyRequest().authenticated()
+				.and()
 				.addFilter(new JWTAuthenticationFilter(authenticationManager()))
 				.addFilter(new JWTAuthorizationFilter(authenticationManager(), userRepository)).sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -16,7 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.hateoas.RepresentationModel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -36,9 +35,7 @@ public class UserEntity extends RepresentationModel<UserEntity> implements Seria
 	@Column(name = "userId")
 	private String userId;
 
-	@NotEmpty(message = "Email is required")
 	private String email;
-
 	private String password;
 	private String name;
 	private boolean enabled;

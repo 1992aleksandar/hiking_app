@@ -20,7 +20,7 @@ import java.util.Set;
 public class EventModelAssembler extends RepresentationModelAssemblerSupport<EventEntity, EventModel> {
 
 	public EventModelAssembler() {
-		super(UserController.class, EventModel.class);
+		super(EventController.class, EventModel.class);
 	}
 
 	@Override
@@ -36,13 +36,22 @@ public class EventModelAssembler extends RepresentationModelAssemblerSupport<Eve
 		eventModel.setName(entity.getName());
 		eventModel.setDateTime(entity.getDateTime());
 		eventModel.setDescription(entity.getDescription());
-		eventModel.setGroup_leaders(toGroupLeaderModel(entity.getGroup_leaders()));
-		eventModel.setHikers(toHikerModel(entity.getHikers()));
+		try {
+			eventModel.setGroup_leaders(toGroupLeaderModel(entity.getGroup_leaders()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			eventModel.setHikers(toHikerModel(entity.getHikers()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		return eventModel;
 	}
 
-	public Set<GroupLeaderModel> toGroupLeaderModel(Set<GroupLeaderEntity> entities) {
+	public Set<GroupLeaderModel> toGroupLeaderModel(Set<GroupLeaderEntity> entities) throws Exception {
 
 		Set<GroupLeaderModel> groupLeadersModel = new HashSet<GroupLeaderModel>();
 
@@ -57,7 +66,7 @@ public class EventModelAssembler extends RepresentationModelAssemblerSupport<Eve
 		return groupLeadersModel;
 	}
 
-	public Set<HikerModel> toHikerModel(Set<HikerEntity> entities) {
+	public Set<HikerModel> toHikerModel(Set<HikerEntity> entities) throws Exception {
 
 		Set<HikerModel> hikersModel = new HashSet<HikerModel>();
 

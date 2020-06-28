@@ -2,12 +2,15 @@ package hiking_app.request;
 
 import javax.validation.constraints.NotBlank;
 
-public class RegisterHikerModelMapping {
+import hiking_app.security.constraint.ValidEmail;
+import hiking_app.security.constraint.ValidPassword;
 
-	@NotBlank(message = "Email is mandatory")
+public class RegisterHikerModelMapping {
+	
+	@ValidEmail
 	private String email;
 
-	@NotBlank(message = "Password is mandatory")
+	@ValidPassword
 	private String password;
 
 	@NotBlank(message = "Name is mandatory")

@@ -7,11 +7,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
-public class HikingAppApplication {		
-	
+public class HikingAppApplication {
+
 	public static void main(String[] args) {
 		SpringApplication.run(HikingAppApplication.class, args);
-	}	
+	}
 
 	@Bean
 	public SpringApplicationContext springApplicationContext() {

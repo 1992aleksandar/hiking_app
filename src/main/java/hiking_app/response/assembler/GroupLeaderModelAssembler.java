@@ -19,7 +19,11 @@ public class GroupLeaderModelAssembler
 	public GroupLeaderModel toModel(GroupLeaderEntity entity) {
 		GroupLeaderModel groupLeaderModel = instantiateModel(entity);
 
-		groupLeaderModel.add(linkTo(methodOn(UserController.class).getUser(entity.getEmail())).withSelfRel());
+		try {
+			groupLeaderModel.add(linkTo(methodOn(UserController.class).getUser(entity.getEmail())).withSelfRel());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		groupLeaderModel.setName(entity.getName());
 		groupLeaderModel.setEmail(entity.getEmail());

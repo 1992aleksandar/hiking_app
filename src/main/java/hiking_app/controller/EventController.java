@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +37,7 @@ public class EventController {
 	@GetMapping(path = "events/{eventName}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<EventModel> getEventByName(@PathVariable String eventName) throws Exception {
 		EventEntity event;
-
+		
 		if ((event = eventRepository.getEventEntityByName(eventName)) == null)
 			throw new Exception("Event not found");
 		else {
@@ -63,4 +64,15 @@ public class EventController {
 
 		return returnValue;
 	}
+
+	@DeleteMapping(produces = { MediaType.APPLICATION_JSON_VALUE }, path = "/events/{eventName}")
+	public void deleteEvent(@PathVariable String eventName)
+			throws Exception {
+		EventEntity event = eventRepository.getEventEntityByName(eventName);
+		if (event == null)
+			throw new Exception("Event wasnt found");		
+
+		eventRepository.delete(event);
+	}
+
 }
